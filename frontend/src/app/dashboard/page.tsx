@@ -76,27 +76,31 @@ export default function DashboardPage() {
   }
 
   async function recordPayment(event: FormEvent<HTMLFormElement>, loanId: string) {
-    event.preventDefault();
-    setMessage("");
-    const form = new FormData(event.currentTarget);
+  event.preventDefault();
+  setMessage("");
 
-    try {
-      await api(`/dashboard/collection/${loanId}/payments`, {
-        method: "POST",
-        body: JSON.stringify({
-          utrNumber: form.get("utrNumber"),
-          amount: Number(form.get("amount")),
-          paidAt: form.get("paidAt")
-        })
-      });
-      event.currentTarget.reset();
-      setMessage("Payment recorded.");
-      await load();
-    } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Payment failed.");
-    }
+  const formElement = event.currentTarget;
+  const form = new FormData(formElement);
+
+  try {
+    await api(`/dashboard/collection/${loanId}/payments`, {
+      method: "POST",
+      body: JSON.stringify({
+        utrNumber: form.get("utrNumber"),
+        amount: Number(form.get("amount")),
+        paidAt: form.get("paidAt")
+      })
+    });
+
+    formElement.reset();
+
+    setMessage("Payment recorded.");
+
+    await load(active);
+  } catch (err) {
+    setMessage(err instanceof Error ? err.message : "Payment failed.");
   }
-
+}
   return (
     <AppShell>
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
