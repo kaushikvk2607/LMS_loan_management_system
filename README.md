@@ -1,131 +1,277 @@
 # Loan Management System
 
-A full-stack MERN + Next.js + TypeScript assignment build for a loan lifecycle workflow.
+A full-stack MERN + Next.js + TypeScript application implementing an end-to-end loan lifecycle workflow with role-based operations, BRE validation, loan sanctioning, disbursement, and repayment tracking.
 
-## Stack
+## Live Demo
 
-- Frontend: Next.js App Router, TypeScript, Tailwind CSS
-- Backend: Node.js, Express, TypeScript
-- Database: MongoDB, Mongoose
-- Auth: JWT, bcrypt
-- Uploads: Multer with PDF/JPG/PNG validation
+### Frontend Application
+
+https://lms-loan-management-system-frontend.vercel.app
+
+### Backend API
+
+https://lms-loan-management-system.onrender.com
+
+### Health Check
+
+https://lms-loan-management-system.onrender.com/health
+
+---
+
+## Tech Stack
+
+### Frontend
+
+* Next.js (App Router)
+* TypeScript
+* Tailwind CSS
+* React Hooks
+
+### Backend
+
+* Node.js
+* Express.js
+* TypeScript
+* JWT Authentication
+* Multer File Upload
+
+### Database
+
+* MongoDB Atlas
+* Mongoose ODM
+
+---
 
 ## Features
 
-- Borrower signup and login
-- Server-side BRE for age, salary, PAN, and employment checks
-- Salary slip upload with 5 MB limit
-- Loan amount and tenure sliders with simple-interest calculation
-- Loan lifecycle: `APPLIED`, `SANCTIONED`, `REJECTED`, `DISBURSED`, `CLOSED`
-- Executive modules for Sales, Sanction, Disbursement, and Collection
-- Backend and frontend role-based access control
-- Unique UTR validation for payments
-- Automatic loan closure after full repayment
-- Seeded users for evaluator testing
+### Borrower Module
+
+* User Registration & Login
+* BRE (Business Rule Engine) Validation
+* Salary Slip Upload
+* Loan Eligibility Check
+* Loan Application Submission
+
+### Sales Module
+
+* View borrower leads
+* Track eligibility status
+
+### Sanction Module
+
+* Approve loan applications
+* Reject applications with reason
+
+### Disbursement Module
+
+* Disburse sanctioned loans
+* Update loan lifecycle status
+
+### Collection Module
+
+* Record repayments
+* UTR validation
+* Auto-close loan after complete repayment
+
+### Security Features
+
+* JWT Authentication
+* Role-Based Access Control (RBAC)
+* Protected APIs
+* Secure Password Hashing using bcrypt
+
+---
+
+## Loan Lifecycle
+
+```text
+APPLIED
+   ↓
+SANCTIONED
+   ↓
+DISBURSED
+   ↓
+CLOSED
+
+OR
+
+APPLIED
+   ↓
+REJECTED
+```
+
+---
+
+## Business Rule Engine (BRE)
+
+Loan eligibility is evaluated based on:
+
+* Age validation
+* Monthly salary validation
+* Employment type validation
+* PAN validation
+
+Only eligible borrowers can proceed with loan applications.
+
+---
 
 ## Local Setup
 
-1. Install dependencies:
+### Install Dependencies
 
 ```bash
 npm install
 ```
 
-2. Create environment files:
+### Configure Environment Variables
+
+Backend:
 
 ```bash
 cp backend/.env.example backend/.env
+```
+
+Frontend:
+
+```bash
 cp frontend/.env.example.local frontend/.env.local
 ```
 
-3. Start MongoDB locally or set `MONGODB_URI` in `backend/.env`.
+### Start MongoDB
 
 ```bash
 docker compose up -d mongo
 ```
 
-4. Seed login accounts:
+### Seed Users
 
 ```bash
 npm run seed
 ```
 
-5. Run both apps:
+### Run Application
 
 ```bash
 npm run dev
 ```
 
-Frontend: `http://localhost:3000`  
-Backend: `http://localhost:4000`
+Frontend:
+
+```text
+http://localhost:3000
+```
+
+Backend:
+
+```text
+http://localhost:4000
+```
+
+---
 
 ## Seeded Credentials
 
-All seeded accounts use this password:
+Password for all users:
 
 ```text
 Password@123
 ```
 
-| Role | Email |
-| --- | --- |
-| Admin | `admin@lms.dev` |
-| Sales | `sales@lms.dev` |
-| Sanction | `sanction@lms.dev` |
-| Disbursement | `disbursement@lms.dev` |
-| Collection | `collection@lms.dev` |
-| Borrower | `borrower@lms.dev` |
+| Role                   | Email                                               |
+| ---------------------- | --------------------------------------------------- |
+| Admin                  | [admin@lms.dev](mailto:admin@lms.dev)               |
+| Sales Executive        | [sales@lms.dev](mailto:sales@lms.dev)               |
+| Sanction Executive     | [sanction@lms.dev](mailto:sanction@lms.dev)         |
+| Disbursement Executive | [disbursement@lms.dev](mailto:disbursement@lms.dev) |
+| Collection Executive   | [collection@lms.dev](mailto:collection@lms.dev)     |
+| Borrower               | [borrower@lms.dev](mailto:borrower@lms.dev)         |
 
-## API Overview
+---
 
-| Method | Route | Access |
-| --- | --- | --- |
-| POST | `/api/auth/register` | Public |
-| POST | `/api/auth/login` | Public |
-| GET | `/api/auth/me` | Authenticated |
-| GET | `/api/borrower/me` | Borrower |
-| POST | `/api/borrower/details` | Borrower |
-| POST | `/api/borrower/salary-slip` | Borrower |
-| POST | `/api/borrower/apply` | Borrower |
-| GET | `/api/dashboard/sales` | Admin, Sales |
-| GET | `/api/dashboard/sanction` | Admin, Sanction |
-| PATCH | `/api/dashboard/sanction/:loanId/approve` | Admin, Sanction |
-| PATCH | `/api/dashboard/sanction/:loanId/reject` | Admin, Sanction |
-| GET | `/api/dashboard/disbursement` | Admin, Disbursement |
-| PATCH | `/api/dashboard/disbursement/:loanId/disburse` | Admin, Disbursement |
-| GET | `/api/dashboard/collection` | Admin, Collection |
-| POST | `/api/dashboard/collection/:loanId/payments` | Admin, Collection |
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint           |
+| ------ | ------------------ |
+| POST   | /api/auth/register |
+| POST   | /api/auth/login    |
+| GET    | /api/auth/me       |
+
+### Borrower
+
+| Method | Endpoint                  |
+| ------ | ------------------------- |
+| GET    | /api/borrower/me          |
+| POST   | /api/borrower/details     |
+| POST   | /api/borrower/salary-slip |
+| POST   | /api/borrower/apply       |
+
+### Dashboard
+
+| Method | Endpoint                                     |
+| ------ | -------------------------------------------- |
+| GET    | /api/dashboard/sales                         |
+| GET    | /api/dashboard/sanction                      |
+| PATCH  | /api/dashboard/sanction/:loanId/approve      |
+| PATCH  | /api/dashboard/sanction/:loanId/reject       |
+| GET    | /api/dashboard/disbursement                  |
+| PATCH  | /api/dashboard/disbursement/:loanId/disburse |
+| GET    | /api/dashboard/collection                    |
+| POST   | /api/dashboard/collection/:loanId/payments   |
+
+---
 
 ## Deployment
 
-### Backend
-
-- Build command: `npm run build -w backend`
-- Start command: `npm run start -w backend`
-- Required environment variables:
-  - `PORT`
-  - `MONGODB_URI`
-  - `JWT_SECRET`
-  - `CLIENT_ORIGIN`
-  - `UPLOAD_DIR`
-
-Use a persistent upload volume in production if salary slips must remain available after redeploys.
-
 ### Frontend
 
-- Build command: `npm run build -w frontend`
-- Start command: `npm run start -w frontend`
-- Required environment variable:
-  - `NEXT_PUBLIC_API_URL`
+Platform: Vercel
 
-Set `NEXT_PUBLIC_API_URL` to the deployed backend API URL ending in `/api`.
+Environment Variable:
+
+```env
+NEXT_PUBLIC_API_URL=https://lms-loan-management-system.onrender.com/api
+```
+
+### Backend
+
+Platform: Render
+
+Environment Variables:
+
+```env
+PORT=10000
+MONGODB_URI=<mongodb-atlas-uri>
+JWT_SECRET=<secret>
+CLIENT_ORIGIN=https://lms-loan-management-system-frontend.vercel.app
+UPLOAD_DIR=uploads
+```
+
+---
 
 ## Evaluation Flow
 
-1. Register or log in as borrower.
-2. Submit one failing BRE case and one passing BRE case.
-3. Upload a valid salary slip.
-4. Apply for a loan.
-5. Log in as Sanction or Admin and approve.
-6. Log in as Disbursement or Admin and disburse.
-7. Log in as Collection or Admin and record payments until the loan closes.
+1. Register as a borrower or use seeded borrower account.
+2. Submit borrower details.
+3. Upload salary slip.
+4. Run eligibility check.
+5. Apply for a loan.
+6. Login as Sanction Executive and approve.
+7. Login as Disbursement Executive and disburse.
+8. Login as Collection Executive and record repayments.
+9. Observe automatic loan closure after full repayment.
+
+---
+
+## Project Highlights
+
+* Full-stack TypeScript application
+* Production deployment on Vercel + Render + MongoDB Atlas
+* Role-based workflow automation
+* Business Rule Engine (BRE)
+* File upload validation
+* JWT Authentication
+* Loan lifecycle management
+* Responsive UI
+* End-to-end workflow demonstration
